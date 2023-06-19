@@ -2,10 +2,13 @@ import * as React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {StyleSheet, View, Text, Alert} from "react-native";
 import AsyncStorage from 'react-native-simple-store';
+import * as Font from 'expo-font';
+import fonts from '../utils/fonts'
 
 import Onboarding from "../screens/Onboarding";
 import ProfileScreen from "../screens/ProfileScreen";
 import SplashScreen from "../screens/SplashScreen";
+import HomeScreen from "../screens/HomeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,16 +17,28 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   }
 })
-
+const clearStorage = async () => {
+  const keys = (await AsyncStorage.keys());
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    await AsyncStorage.delete(key);
+  }
+}
 const RootNavigator = () => {
   const [isOnboardingCompleted, setOnboardingCompleted] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
-
+   clearStorage(); 
+  let user;
   React.useEffect(() => {
     (async () => {
       try {
-        const user = await AsyncStorage.get('user');
+        user = await AsyncStorage.get('user');
+        await Font.loadAsync(fonts);
+
         setIsLoading(false);
+        if(user){
+          setOnboardingCompleted(true);
+        }
       } catch (e) {
         // Handle error
         Alert.alert(e.message);
@@ -31,20 +46,18 @@ const RootNavigator = () => {
     })();
   }, []);
 
-   if (isLoading) {
-     // We haven't finished reading from AsyncStorage yet
-     return <SplashScreen />;
-    }
+  if (isLoading) {
+   return <SplashScreen />;
+  }else if(!user){
+      setOnboardingCompleted(false);
+  }
   return (
     <Stack.Navigator>
-      {isOnboardingCompleted ? (
-           //  Onboarding completed, user is signed in
-            <Stack.Screen name="Profile" component={ProfileScreen} />
-          ) : (
-           //  User is NOT signed in
-            <Stack.Screen name="Onboarding" component={Onboarding} options={{headerShown:false}} />
-          )}
-
+      {isOnboardingCompleted ? 
+        <Stack.Screen name="Onboarding" component={Onboarding} options={{headerShown:false}} />
+      : null}
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Profile" component={ProfileScreen} />
     </Stack.Navigator>
   );
 };
