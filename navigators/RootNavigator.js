@@ -27,7 +27,8 @@ const clearStorage = async () => {
 const RootNavigator = () => {
   const [isOnboardingCompleted, setOnboardingCompleted] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
-   clearStorage(); 
+  //  clearStorage(); 
+  
   let user;
   React.useEffect(() => {
     (async () => {
@@ -48,15 +49,15 @@ const RootNavigator = () => {
 
   if (isLoading) {
    return <SplashScreen />;
-  }else if(!user){
+  }else if(!user && isOnboardingCompleted){
       setOnboardingCompleted(false);
   }
   return (
     <Stack.Navigator>
-      {isOnboardingCompleted ? 
+      {!isOnboardingCompleted ? 
         <Stack.Screen name="Onboarding" component={Onboarding} options={{headerShown:false}} />
       : null}
-              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Home" component={HomeScreen}  options={{headerShown:false}}/>
               <Stack.Screen name="Profile" component={ProfileScreen} />
     </Stack.Navigator>
   );
