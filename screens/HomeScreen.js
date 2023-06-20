@@ -1,21 +1,119 @@
 import * as React from 'react';
-import {StatusBar, StyleSheet, Text, View, Image, Pressable, ScrollView} from 'react-native';
+import { useEffect, useState, useCallback, useMemo } from 'react';
+import {StatusBar, StyleSheet, Text, View, Image, Pressable, ScrollView, FlatList, Alert} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-const img = require('../assets/Logo.png');
+import { Searchbar } from 'react-native-paper';
+import Header from '../components/Header';
+import debounce from 'lodash.debounce';
+
+import {
+    createTable,
+    getMenuItems,
+    saveMenuItems,
+    filterByQueryAndCategories,
+  } from '../database';
+import { getListData, useUpdateEffect } from '../utils';
+import ListItem from '../components/ListItem';
+import Filters from '../components/Filters';
+
+const API_URL =
+  'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json';
+
 const heroImage = require('../assets/hero.png');
-const profileImg = require('../assets/Profile.png');
+
+const sections = ['Starters', 'Mains', 'Desserts', 'Drinks'];
 
 
+// 
+//
 export default function HomeScreen({navigation}) {
+    const [data, setData] = useState([]);
+    const [searchBarText, setSearchBarText] = useState('');
+    const [query, setQuery] = useState('');
+
+    const [filterSelections, setFilterSelections] = useState(
+      sections.map(() => false)
+    );
+  
+    const fetchData = async() => {
+      // 1. Implement this function
+      try{
+        const json = await fetch(API_URL).then(txt=>txt.json())
+        // console.log(JSON.stringify(json, null, '\t'))
+        return json.menu;
+      }catch(e){
+        console.error(`FETCH FAILED`)
+      }
+      // Fetch the menu from the API_URL endpoint. You can visit the API_URL in your browser to inspect the data returned
+      // The category field comes as an object with a property called "title". You just need to get the title value and set it under the key "category".
+      // So the server response should be slighly transformed in this function (hint: map function) to flatten out each menu item in the array,
+      return [];
+    }
+  
+    useEffect(() => {
+      (async () => {
+        try {
+          await createTable();
+          let menuItems = await getMenuItems();
+  
+          // The application only fetches the menu data once from a remote URL
+          // and then stores it into a SQLite database.
+          // After that, every application restart loads the menu from the database
+          if (!menuItems.length) {
+            const menuItems = await fetchData();
+            await saveMenuItems(menuItems);
+          }
+          const listData = getListData(menuItems);
+          setData(listData);
+        } catch (e) {
+          // Handle error
+          Alert.alert(e.message);
+        }
+      })();
+    }, []);
+  
+    useUpdateEffect(() => {
+      (async () => {
+          const activeCategories = sections.filter((s, i) => {
+        // If all filters are deselected, all categories are active
+        if (filterSelections.every((item) => item === false)) {
+          return true;
+            }
+            return filterSelections[i];
+        });
+        try {
+            const menuItems = await filterByQueryAndCategories(
+                query,
+                activeCategories
+            );
+          const sectionListData = getListData(menuItems);
+          setData(sectionListData);
+        } catch (e) {
+          Alert.alert(e.message);
+        }
+      })();
+    }, [filterSelections, query]);
+  
+    const lookup = useCallback((q) => {
+      setQuery(q);
+    }, []);
+  
+    const debouncedLookup = useMemo(() => debounce(lookup, 500), [lookup]);
+  
+    const handleSearchChange = (text) => {
+      setSearchBarText(text);
+      debouncedLookup(text);
+    };
+  
+    const handleFiltersChange = async (index) => {
+      const arrayCopy = [...filterSelections];
+      arrayCopy[index] = !filterSelections[index];
+      setFilterSelections(arrayCopy);
+    };
+
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Text></Text>
-                <Image style={styles.image} source={img}/>
-                <Pressable style= {{position:"absolute", right:0}} onPress={()=>navigation.navigate("Profile")}>
-                       <Image style={styles.imageProfile} source={profileImg}></Image>
-                </Pressable>
-            </View>
+            <Header navigation={navigation} showProfile={true}/>
             <View style={styles.body}>
                 <Text style={styles.h1}>
                     Little Lemon
@@ -37,9 +135,25 @@ export default function HomeScreen({navigation}) {
                 <View>
                     <Text style={{fontSize: 18, fontWeight:"bold"}}>ORDER FOR DELIVERY!</Text>
                 </View>
-                <ScrollView>
-
-                </ScrollView>
+                <Searchbar
+                    placeholder="Search"
+                    placeholderTextColor="white"
+                    onChangeText={handleSearchChange}
+                    value={searchBarText}
+                    style={styles.searchBar}
+                    iconColor="white"
+                    inputStyle={{ color: 'white' }}
+                    elevation={0}
+                />
+                    <Filters
+                        selections={filterSelections}
+                        onChange={handleFiltersChange}
+                        sections={sections}
+                    />
+                <FlatList data={data}  
+                    keyExtractor={item => item.id}
+                    renderItem={({item}) => <ListItem {...item}/>}
+                />
             </View>
             
         </View>
@@ -52,14 +166,12 @@ const styles = StyleSheet.create({
         paddingTop: StatusBar.currentHeight,
         // backgroundColor: '#495E57',
     },
-    header: {
-        flex:0.1,
-        backgroundColor: "#dee3e9",
-        alignItems:'center',
-        justifyContent:'center',
-        flexDirection: "row",
-        padding:4,
-    },
+    searchBar: {
+        marginBottom: 24,
+        backgroundColor: '#3d3d3d',
+        shadowRadius: 0,
+        shadowOpacity: 0,
+      },
     body: {
         flex: 0.4,
         padding:16,
@@ -111,15 +223,7 @@ const styles = StyleSheet.create({
         fontSize:24,
         fontFamily: "Karla",
     },
-    image:{
-        resizeMode: "contain"
-    },
-    imageProfile:{
-        resizeMode: "cover",
-        height: 50,
-        width: 50,
-        borderRadius: 100,
-    },
+   
     imageRight:{
         resizeMode: "cover",
         height: 115,
