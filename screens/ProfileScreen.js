@@ -39,8 +39,8 @@ export default class ProfileScreen extends React.Component{
     discard = () => {
         this.setState(this.copyIfDiscard);
     }
-    save = () => {
-        AsyncStorage.update('user', this.state);
+    save = async () => {
+        await AsyncStorage.update('user', this.state);
         Alert.alert("Your changes have been saved!")
     }
     delete = async () => {
@@ -53,9 +53,9 @@ export default class ProfileScreen extends React.Component{
             fillColor:"#cbd2d9",
             unfillColor:"white",
             
-            iconStyle:{ borderColor: "red", borderRadius:4,marginBottom:8 },
+            iconStyle:{ borderColor: "red", borderRadius:4, marginBottom:8 },
             innerIconStyle:{ borderWidth: 2, borderRadius: 4 },
-            textStyle:{ fontFamily: "Markazi",  }
+            textStyle:{ fontFamily: "Markazi", textDecorationLine: "none", }
         }
         return (
             <View style={styles.container}>
@@ -69,13 +69,13 @@ export default class ProfileScreen extends React.Component{
                     </View>
                     <View style={{padding:16}}>
                         <Text>First name</Text>
-                        <TextInput style={styles.textInput}></TextInput>
+                        <TextInput style={styles.textInput} onChangeText={(v)=>this.setState({...this.state, firstName:v})}>{this.state.firstName}</TextInput>
                         <Text>Last name</Text>
-                        <TextInput style={styles.textInput}></TextInput>
+                        <TextInput style={styles.textInput} onChangeText={(v)=>this.setState({...this.state, lastName:v})}>{this.state.lastName}</TextInput>
                         <Text>Email</Text>
-                        <TextInput style={styles.textInput}></TextInput>
+                        <TextInput style={styles.textInput} onChangeText={(v)=>this.setState({...this.state, email:v})}>{this.state.email}</TextInput>
                         <Text>Phone number</Text>
-                        <TextInput style={styles.textInput}></TextInput>
+                        <TextInput style={styles.textInput} onChangeText={(v)=>this.setState({...this.state, phone:v})}>{this.state.phone}</TextInput>
                     </View>
                     <View style={{marginBottom:8, marginTop:0}}>
                         <Text style={styles.h2}>
