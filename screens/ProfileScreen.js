@@ -41,18 +41,21 @@ export default class ProfileScreen extends React.Component{
     }
     save = () => {
         AsyncStorage.update('user', this.state);
+        Alert.alert("Your changes have been saved!")
     }
-    delete = () => {
+    delete = async () => {
+        await AsyncStorage.delete('user');
         this.props.navigator.navigate('Home');
     }
     render(){
         const checkBoxProps = {
             size:25,
             fillColor:"#cbd2d9",
-            unfillColor:"#cbd2d9",
-            iconStyle:{ borderColor: "red", borderRadius:2 },
-            innerIconStyle:{ borderWidth: 2 },
-            textStyle:{ fontFamily: "Markazi" }
+            unfillColor:"white",
+            
+            iconStyle:{ borderColor: "red", borderRadius:4,marginBottom:8 },
+            innerIconStyle:{ borderWidth: 2, borderRadius: 4 },
+            textStyle:{ fontFamily: "Markazi",  }
         }
         return (
             <View style={styles.container}>
@@ -64,9 +67,6 @@ export default class ProfileScreen extends React.Component{
                         </Text>
                         <Image source={profileImg} style={{width: 75, height:75, borderRadius:100}} resizeMode="contain" />
                     </View>
-
-                    <View style={{flexDirection:"row", alignItems:"center", height: 100, padding:16}}>
-                    </View>
                     <View style={{padding:16}}>
                         <Text>First name</Text>
                         <TextInput style={styles.textInput}></TextInput>
@@ -77,7 +77,7 @@ export default class ProfileScreen extends React.Component{
                         <Text>Phone number</Text>
                         <TextInput style={styles.textInput}></TextInput>
                     </View>
-                    <View>
+                    <View style={{marginBottom:8, marginTop:0}}>
                         <Text style={styles.h2}>
                             Email notifications
                         </Text>
@@ -109,7 +109,7 @@ export default class ProfileScreen extends React.Component{
                     </View>
                     <Button title="Log out" color="#f4ce14" onPress={this.delete}></Button>
                     <View style={{flexDirection:"row", alignItems:"center", justifyContent:"center", height: 100, gap: 16}}>
-                        <Button color="white" title="Discard changes" onPress={this.discard}></Button>
+                        <Button color="grey" title="Discard changes" onPress={this.discard} ></Button>
                         <Button color="#495e57" title="Save changes" onPress={this.save}></Button>
                     </View>
                 </ScrollView>

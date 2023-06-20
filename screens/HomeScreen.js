@@ -150,10 +150,9 @@ export default function HomeScreen({navigation}) {
                     />
                 <FlatList data={data}  
                     keyExtractor={item => item.id}
-                    renderItem={({item}) => <ListItem {...item}/>}
+                    renderItem={({item}) => <ListItem {...item} key={item.id}/>}
                 />
             </View>
-            
         </View>
     )
 }

@@ -1,14 +1,14 @@
 import {StatusBar, StyleSheet, Text, View, Image, Pressable, ScrollView} from 'react-native';
 
-export default function ListItem({image, name, description, price}) {
+export default function ListItem({id, image, name, description, price}) {
     return (
-    <View style={styles.row}>
-        <View>
+    <View style={styles.row} >
+        {/* <View>
             <Text style={{fontWeight: "bold"}}>{name}</Text>
             <Text>{description}</Text>
             <Text>{price}</Text>
-        </View>
-        {/* <Image style={styles.image} source={{uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`}}/> */}
+        </View> */}
+        <Image style={styles.image} source={{uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`}}/>
         
        
     </View>);
