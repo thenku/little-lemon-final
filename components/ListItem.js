@@ -8,7 +8,7 @@ export default function ListItem({image, name, description, price}) {
             <Text>{description}</Text>
             <Text>{price}</Text>
         </View>
-        <Image style={styles.image} source={{uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`}}/>
+        {/* <Image style={styles.image} source={{uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`}}/> */}
         
        
     </View>);

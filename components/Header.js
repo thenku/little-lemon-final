@@ -24,7 +24,6 @@ export default function Header(props) {
 
 const styles = StyleSheet.create({
     header: {
-        flex:0.1,
         backgroundColor: "#dee3e9",
         alignItems:'center',
         justifyContent:'center',

@@ -110,7 +110,6 @@ export default function HomeScreen({navigation}) {
       arrayCopy[index] = !filterSelections[index];
       setFilterSelections(arrayCopy);
     };
-
     return (
         <View style={styles.container}>
             <Header navigation={navigation} showProfile={true}/>
@@ -118,7 +117,7 @@ export default function HomeScreen({navigation}) {
                 <Text style={styles.h1}>
                     Little Lemon
                 </Text>
-                <View style={{flexDirection: "row", gap:4, justifyContent: "space-between", alignItems: "flex-start"}}>
+                <View style={{flexDirection: "row", gap:4, justifyContent: "space-between", alignItems: "flex-start", marginBottom:8}}>
                     <View>
                         <Text style={styles.h2}>
                         Chicago
@@ -129,22 +128,21 @@ export default function HomeScreen({navigation}) {
                     </View>
                     <Image style={styles.imageRight} source={heroImage} />
                 </View>
-               
-            </View>
-            <View style={{flex:.5, padding:16}}>
-                <View>
-                    <Text style={{fontSize: 18, fontWeight:"bold"}}>ORDER FOR DELIVERY!</Text>
-                </View>
                 <Searchbar
-                    placeholder="Search"
-                    placeholderTextColor="white"
+                    placeholder=""
+                    placeholderTextColor="grey"
                     onChangeText={handleSearchChange}
                     value={searchBarText}
                     style={styles.searchBar}
-                    iconColor="white"
-                    inputStyle={{ color: 'white' }}
+                    iconColor="black"
+                    inputStyle={{ color: 'black' }}
                     elevation={0}
                 />
+            </View>
+            <View style={{flex:.5, padding:16}}>
+                <View>
+                    <Text style={{fontSize: 18, fontWeight:"bold", marginBottom:16}}>ORDER FOR DELIVERY!</Text>
+                </View>
                     <Filters
                         selections={filterSelections}
                         onChange={handleFiltersChange}
@@ -167,13 +165,12 @@ const styles = StyleSheet.create({
         // backgroundColor: '#495E57',
     },
     searchBar: {
-        marginBottom: 24,
-        backgroundColor: '#3d3d3d',
+        borderRadius: 4,
+        backgroundColor: 'white',
         shadowRadius: 0,
         shadowOpacity: 0,
       },
     body: {
-        flex: 0.4,
         padding:16,
         backgroundColor: "#495E57",
     },

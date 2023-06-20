@@ -7,7 +7,7 @@ import { useRef, useEffect } from 'react';
  * @see https://reactnative.dev/docs/sectionlist as a reference
  */
 export function getListData(data = []) {
-  
+  return data;
   const indexes = {};
   const LIST_DATA = [];
 
