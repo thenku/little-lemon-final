@@ -2,14 +2,13 @@ import {StatusBar, StyleSheet, Text, View, Image, Pressable, ScrollView} from 'r
 
 export default function ListItem({id, image, name, description, price}) {
     return (
-    <View style={styles.row} >
-        {/* <View>
+    <View style={styles.row} key={id}>
+        <Text>{description}</Text>
+        <View>
             <Text style={{fontWeight: "bold"}}>{name}</Text>
-            <Text>{description}</Text>
             <Text>{price}</Text>
-        </View> */}
+        </View>
         <Image style={styles.image} source={{uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`}}/>
-        
        
     </View>);
 
