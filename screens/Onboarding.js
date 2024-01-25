@@ -6,10 +6,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const img = require('../assets/Logo.png');
 
 
-export default function Onboarding({navigation}) {
+export default function Onboarding(props) {
+    const {navigation, route} = props;
+    const reloadMeProp = route.params?.reloadMe;
     const [isButtonDisabled, setButtonDisabled ] = React.useState(true);
     const [firstName, setInput1] = React.useState("");
     const [email, setInput2] = React.useState("");
+    const [reloadMe, setReloadMe] = React.useState(true);
 
     const toggleNextBtn = (v1 = "",v2 = "") =>{
         if(v1.length > 0 && v2.length > 0){
@@ -32,7 +35,25 @@ export default function Onboarding({navigation}) {
             navigation.navigate('Home')
         })
     }
-
+    const homeIfUserExists = () => {
+        AsyncStorage.get('user').then(d=>{
+            // console.log(d)
+            if(d){
+                navigation.navigate('Home')
+            }else{
+                setInput1('')
+                setInput2('')
+            }
+        })
+    }
+    React.useEffect(() => {
+        homeIfUserExists();
+       
+    }, []);
+    if(reloadMe && reloadMeProp){
+        setReloadMe(false);
+        homeIfUserExists()
+    }
     return (
         <View style={styles.container}>
             <View style={styles.header}>

@@ -1,19 +1,8 @@
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('little_lemon');
-
 export async function createTable() {
-  return new Promise((resolve, reject) => {
-    db.transaction(
-      (tx) => {
-        tx.executeSql(
-          'create table if not exists menuitems (id integer primary key not null, name text, description text, price text, category text, image text);'
-        );
-      },
-      reject,
-      resolve
-    );
-  });
+  return db.execAsync([{sql:'create table if not exists menuitems (id integer primary key not null, name text, description text, price text, category text, image text);',args:[]}],false)
 }
 
 export async function getMenuItems() {
@@ -49,8 +38,8 @@ export async function saveMenuItems(menuItems = []) {
  export async function filterByQueryAndCategories(query, activeCategories) {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
-      
-      const q = `select * from menuitems where ${(query ? `(name LIKE '%${query}%' OR description LIKE '%${query}%') AND `: '')}(${activeCategories.map(cat=>`category="${cat}"`).join(' OR ')})`;
+      let q = `select * from menuitems where ${(query ? `(name LIKE '%${query}%' OR description LIKE '%${query}%') AND `: '')}(${activeCategories.map(cat=>`category="${cat}"`).join(' OR ')})`;
+      q = `select * from menuitems where ${(query) ? `(name LIKE '%${query}%' OR description LIKE '%${query}%') AND`:''} (${activeCategories.map(cat=>`category="${cat.toLowerCase()}"`).join(' OR ')})`
       tx.executeSql(q, [], (_, { rows }) => {
         resolve(rows._array);
       });

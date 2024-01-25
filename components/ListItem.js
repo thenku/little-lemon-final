@@ -2,29 +2,39 @@ import {StatusBar, StyleSheet, Text, View, Image, Pressable, ScrollView} from 'r
 
 export default function ListItem({id, image, name, description, price}) {
     return (
-    <View style={styles.row} key={id}>
-        <Text>{description}</Text>
-        <View>
-            <Text style={{fontWeight: "bold"}}>{name}</Text>
-            <Text>{price}</Text>
+    <View style={styles.parent} key={id}>
+        <Text style={{fontWeight: "bold",}}>{name}</Text>
+        <View style={styles.row}>
+            <View style={{flexShrink:1, alignItems:'flex-start', flex:1}}>
+                <Text>{description}</Text>
+                <Text style={styles.price}>${price}</Text>
+            </View>
+            <View>
+                <Image style={styles.image} source={{uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`}}/>
+                {/* <Image style={styles.image} source={{uri: `https://github.com/thenku/little-lemon-final/tree/master/assets/${image}?raw=true`}}/> */}
+            </View>
         </View>
-        <Image style={styles.image} source={{uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`}}/>
-       
     </View>);
-
 }
 
 const styles = StyleSheet.create({
     row: {
         alignItems:'center',
-        justifyContent:'center',
+        justifyContent:'space-between',
         flexDirection: "row",
-        padding:8,
+    },
+    parent:{
+        alignItems:'stretch',
+        flex:1,
+        flexDirection: "column",
+        padding:0,
+        paddingBottom:12,
     },
     image:{
         resizeMode: "cover",
-        height: 50,
-        width: 50,
+        height: 60,
+        alignSelf:"stretch",
+        aspectRatio:1,
     },
     buttonStyleActive:{
         backgroundColor: "#495e57",
@@ -35,4 +45,8 @@ const styles = StyleSheet.create({
         position:"absolute", 
         left:8,
     },
+    price:{
+        paddingTop:4,
+        fontSize: 18
+    }
 })

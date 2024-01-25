@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Searchbar } from 'react-native-paper';
 import Header from '../components/Header';
 import debounce from 'lodash.debounce';
+import json2 from '../assets/menu_items.json'
 
 import {
     createTable,
@@ -12,7 +13,8 @@ import {
     saveMenuItems,
     filterByQueryAndCategories,
   } from '../database';
-import { getListData, useUpdateEffect } from '../utils';
+import { getListData, useUpdateEffect } from '../utils/myUtils';
+
 import ListItem from '../components/ListItem';
 import Filters from '../components/Filters';
 
@@ -38,7 +40,8 @@ export default function HomeScreen({navigation}) {
     const fetchData = async() => {
       // 1. Implement this function
       try{
-        const json = await fetch(API_URL).then(txt=>txt.json())
+        const json = await fetch(API_URL).then(txt=>txt.json()) || json2;
+        // const json = json2;
         // console.log(JSON.stringify(json, null, '\t'))
         return json.menu;
       }catch(e){
@@ -77,9 +80,9 @@ export default function HomeScreen({navigation}) {
           const activeCategories = sections.filter((s, i) => {
         // If all filters are deselected, all categories are active
         if (filterSelections.every((item) => item === false)) {
-          return true;
-            }
-            return filterSelections[i];
+            return true;
+          }
+          return filterSelections[i];
         });
         try {
             const menuItems = await filterByQueryAndCategories(
@@ -139,7 +142,7 @@ export default function HomeScreen({navigation}) {
                     elevation={0}
                 />
             </View>
-            <View style={{flex:.5, padding:16}}>
+            <View style={{flex:1, padding:16, }}>
                 <View>
                     <Text style={{fontSize: 18, fontWeight:"bold", marginBottom:16}}>ORDER FOR DELIVERY!</Text>
                 </View>
@@ -148,7 +151,8 @@ export default function HomeScreen({navigation}) {
                         onChange={handleFiltersChange}
                         sections={sections}
                     />
-                <FlatList data={data}  
+                <FlatList data={data} 
+                  style={{flex:.5, }}
                     keyExtractor={item => item.id}
                     renderItem={({item}) => <ListItem {...item} key={item.id}/>}
                 />

@@ -6,6 +6,7 @@
       "jsx": "react-native",
       "checkJs": true,
       "importHelpers": true,
+      "resolveJsonModule": true
     },
     "exclude": ["./node_modules/**/*"]
   }

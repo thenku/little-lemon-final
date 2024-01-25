@@ -3,6 +3,9 @@ import { Text, View, StyleSheet, StatusBar, ScrollView, Image, TextInput, Button
 import Header from '../components/Header';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import AsyncStorage from 'react-native-simple-store';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 const profileImg = require('../assets/Profile.png');
 
@@ -45,7 +48,8 @@ export default class ProfileScreen extends React.Component{
     }
     delete = async () => {
         await AsyncStorage.delete('user');
-        this.props.navigator.navigate('Home');
+        Alert.alert("Your profile has been cleared!")
+        this.props.navigation.navigate('Onboarding', {reloadMe:true});
     }
     render(){
         const checkBoxProps = {
